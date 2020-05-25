@@ -1,39 +1,40 @@
 ## What is this?
-> log_ship can be configured to retrieve files older than N days from multiple folders
-> and possibly ship these to S3 and/or delete found files.
+log_ship can be configured to retrieve files older than N days from multiple folders and possibly ship these to S3 and/or delete found files.
 
 ## How to get started?
-> create a virtualenv  `virtualenv --python=python3 /home/user_name/.virtualenv/log_ship`
 
-> switch to virtualenv  `source /home/user_name/.virtualenv/log_ship/bin/activate`
+create a virtualenv  `virtualenv --python=python3 /home/user_name/.virtualenv/log_ship`
 
-> install required modules `pip install -r requirements.txt`
+switch to virtualenv  `source /home/user_name/.virtualenv/log_ship/bin/activate`
 
-> run application `python log_ship.py`
+install required modules `pip install -r requirements.txt`
+
+run application `python log_ship.py`
 
 **Note:** Most likely you want to tweak some configuration params in `settings.py` before running
 
 ## How to configure?
-> `settings.py` provides configuration options to configure -
 
->> folders to watch `CONST_DIRECTORIES_TO_WATCH`
+`settings.py` provides configuration options to configure -
 
->> How old files must be to consider for actions `CONST_NUM_DAYS_CUTOFF`
+folders to watch `CONST_DIRECTORIES_TO_WATCH`
 
->> AWS configuration `AWS_CONFIG`
+ How old files must be to consider for actions `CONST_NUM_DAYS_CUTOFF`
 
->> log_ship log file path `SELF_LOG_FILE_PATH`
+ AWS configuration `AWS_CONFIG`
+
+ log_ship log file path `SELF_LOG_FILE_PATH`
 
 *and much more*
 
 **Note:** If you see permission errors if is most likely that folders are you accessing need sudo for access
 
 ## Can we run this every few hours on a linux machine?
-> Glad that you asked. You could use cron or systemd. You can take following steps for performing via systemd
+ Glad that you asked. You could use cron or systemd. You can take following steps for performing via systemd
 
->To use systemd timers, we must first create a .service file for the command we want to run:
+To use systemd timers, we must first create a .service file for the command we want to run:
 
-```
+```bash
 # /etc/systemd/system/log-ship.service
 # assumes log_ship.py is present in /opt/log_ship
 
@@ -53,9 +54,9 @@ WantedBy=default.target
 Alias=log-ship.service
 ```
 
->Now we create the matching .timer file - note that the timer and service files must have the same name:
+Now we create the matching .timer file - note that the timer and service files must have the same name:
 
-```
+```bash
 # /etc/systemd/system/log-ship.timer
 [Unit]
 Description=Run log_ship every day at 06:00
@@ -68,25 +69,25 @@ Persistent=True
 WantedBy=timers.target
 ```
 
-> Now, tell systemctl about the changes
+### Now, tell systemctl about the changes
 
 ```
 $ systemctl daemon-reload
 ```
 
-> Enable the timer. This is how, every boot timer is activated.
+### Enable the timer. This is how, every boot timer is activated.
 
 ```
 $ systemctl enable log_ship.timer
 ```
 
-> Start timer right away (if you want) [Optional]
+### Start timer right away (if you want) [Optional]
 
 ```
 $ systemctl start log_ship.timer
 ```
 
-> At this point you may want to do a manual run to make sure it works.[Optional]
+### At this point you may want to do a manual run to make sure it works.[Optional]
 
 ```
 $ systemctl start log_ship.service
